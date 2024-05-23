@@ -11,8 +11,8 @@ public interface IEmpleadoService {
 	public Empleado guardar(Empleado empleado);
 	public void eliminar(Integer id);
 	public boolean existe (Integer id);
-	 public Empleado buscarPorDni(Integer dni);
-	
+	public Empleado buscarPorDni(Integer dni);
+	public Empleado activar_desactivar(Integer id);
 }
 	
 
