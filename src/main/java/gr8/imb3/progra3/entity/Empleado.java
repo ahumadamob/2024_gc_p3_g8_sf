@@ -1,9 +1,12 @@
 package gr8.imb3.progra3.entity;
 
+import java.util.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -18,6 +21,17 @@ public class Empleado {
 	private String nombre;
 	private String tipoPuesto;
 	private	Integer dni;
+	@NotBlank(message = "El Correo Electronico no puede estar vacío")
+	@Size(max = 40, message = "El Correo Electronico no debe superar los 40 caracteres")
+	private String correoElectronico;
+	@NotBlank(message = "El teléfono no puede estar vacío")
+	@Size(max = 20, message = "El numero no debe superar los 20 caracteres")
+	private String telefono;
+	private boolean activo;
+	@ManyToOne
+	@JoinColumn(name = "supervisor")
+	private Empleado supervisor;
+	private Date fechaContratacion;
 
 	public Integer getId() {
 		return id;
@@ -49,6 +63,46 @@ public class Empleado {
 
 	public void setDni(Integer dni) {
 		this.dni = dni;
+	}
+
+	public String getCorreoElectronico() {
+		return correoElectronico;
+	}
+
+	public void setCorreoElectronico(String correoElectronico) {
+		this.correoElectronico = correoElectronico;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public boolean isActivo() {
+		return activo;
+	}
+
+	public void setActivo(boolean activo) {
+		this.activo = activo;
+	}
+
+	public Empleado getSupervisor() {
+		return supervisor;
+	}
+
+	public void setSupervisor(Empleado supervisor) {
+		this.supervisor = supervisor;
+	}
+
+	public Date getFechaContratacion() {
+		return fechaContratacion;
+	}
+
+	public void setFechaContratacion(Date fechaContratacion) {
+		this.fechaContratacion = fechaContratacion;
 	}
 
 }
