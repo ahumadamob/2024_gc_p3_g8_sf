@@ -1,6 +1,11 @@
 package gr8.imb3.progra3.entity;
 
+import java.sql.Date;
+import java.sql.Time;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,8 +19,8 @@ public class Movimiento {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer idMovimiento;
-	@Min(value = 0, message = "El ´tipo´ debe ser mayor o igual a 0")
-	private int tipo;
+	@Enumerated(EnumType.STRING)
+    private TipoMovimiento tipoMovimiento;
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private Categoria categoria;
@@ -28,19 +33,41 @@ public class Movimiento {
 	@JoinColumn(name = "idEmpleado")
 	private Empleado empleado;
 	@ManyToOne
-	@JoinColumn(name = "idPoriveedor")
+	@JoinColumn(name = "idProveedor")
 	private Proveedor proveedor;
+	@JoinColumn(name = "fecha")
+	private Date fecha;
+	@JoinColumn(name = "hora")
+	private Time hora;
+	@JoinColumn(name = "descripcion")
+	private String descripcion;
+	@JoinColumn(name = "precio_unitario")
+	private float precio_unitario;
+	@JoinColumn(name = "factura")
+	private int factura;
+	@JoinColumn(name = "cantidad_antes")
+	private int cantidad_antes;
+	@JoinColumn(name = "cantidad_despues")
+	private int cantidad_despues;
+	
+	public enum TipoMovimiento {
+	    COMPRA,
+	    VENTA,
+	    TRANSFERENCIA,
+	    AJUSTE
+	}
+	
 	public Integer getIdMovimiento() {
 		return idMovimiento;
 	}
 	public void setIdMovimiento(Integer idMovimiento) {
 		this.idMovimiento = idMovimiento;
 	}
-	public int getTipo() {
-		return tipo;
+	public TipoMovimiento getTipo() {
+		return tipoMovimiento;
 	}
-	public void setTipo(int tipo) {
-		this.tipo = tipo;
+	public void setTipo(TipoMovimiento tipoMovimiento) {
+		this.tipoMovimiento = tipoMovimiento;
 	}
 	public Categoria getCategoria() {
 		return categoria;
@@ -71,6 +98,48 @@ public class Movimiento {
 	}
 	public void setProveedor(Proveedor proveedor) {
 		this.proveedor = proveedor;
+	}
+	public Date getFecha() {
+		return fecha;
+	}
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	public Time getHora() {
+		return hora;
+	}
+	public void setHora(Time hora) {
+		this.hora = hora;
+	}
+	public String getDescripcion() {
+		return descripcion;
+	}
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+	public float getPrecio_unitario() {
+		return precio_unitario;
+	}
+	public void setPrecio_unitario(float precio_unitario) {
+		this.precio_unitario = precio_unitario;
+	}
+	public int getFactura() {
+		return factura;
+	}
+	public void setFactura(int factura) {
+		this.factura = factura;
+	}
+	public int getCantidad_antes() {
+		return cantidad_antes;
+	}
+	public void setCantidad_antes(int cantidad_antes) {
+		this.cantidad_antes = cantidad_antes;
+	}
+	public int getCantidad_despues() {
+		return cantidad_despues;
+	}
+	public void setCantidad_despues(int cantidad_despues) {
+		this.cantidad_despues = cantidad_despues;
 	}
 	
 }
