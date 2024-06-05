@@ -56,8 +56,8 @@ public class MovimientoController {
 	
 	@PostMapping
 	public ResponseEntity<APIResponse<Movimiento>> crearMovimiento(@RequestBody Movimiento movimiento) {
-		if(service.existe(movimiento.getIdMovimiento())) {
-			  return ResponseUtil.badRequest("Ya existe el movimiento con el id: "+ movimiento.getIdMovimiento() +".");
+		if(service.existe(movimiento.getId())) {
+			  return ResponseUtil.badRequest("Ya existe el movimiento con el id: "+ movimiento.getId() +".");
 			
 		}else {
 						
@@ -69,11 +69,11 @@ public class MovimientoController {
 	
 	@PutMapping	
 	public ResponseEntity<APIResponse<Movimiento>> modificarMovimiento(@RequestBody Movimiento movimiento) {
-		if(service.existe(movimiento.getIdMovimiento())) {
+		if(service.existe(movimiento.getId())) {
 			
 			  return ResponseUtil.success(service.guardar(movimiento));
 		}else {
-			 return ResponseUtil.badRequest("No existe el movimiento con el id: "+movimiento.getIdMovimiento()+".");
+			 return ResponseUtil.badRequest("No existe el movimiento con el id: "+movimiento.getId()+".");
 			
 		}
 
