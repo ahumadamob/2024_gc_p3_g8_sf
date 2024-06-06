@@ -18,7 +18,7 @@ import jakarta.validation.constraints.Min;
 public class Movimiento {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer idMovimiento;
+	private Integer id;
 	@Enumerated(EnumType.STRING)
     private TipoMovimiento tipoMovimiento;
 	@ManyToOne
@@ -35,19 +35,12 @@ public class Movimiento {
 	@ManyToOne
 	@JoinColumn(name = "idProveedor")
 	private Proveedor proveedor;
-	@JoinColumn(name = "fecha")
 	private Date fecha;
-	@JoinColumn(name = "hora")
 	private Time hora;
-	@JoinColumn(name = "descripcion")
 	private String descripcion;
-	@JoinColumn(name = "precio_unitario")
 	private float precio_unitario;
-	@JoinColumn(name = "factura")
 	private int factura;
-	@JoinColumn(name = "cantidad_antes")
 	private int cantidad_antes;
-	@JoinColumn(name = "cantidad_despues")
 	private int cantidad_despues;
 	
 	public enum TipoMovimiento {
@@ -57,16 +50,17 @@ public class Movimiento {
 	    AJUSTE
 	}
 	
-	public Integer getIdMovimiento() {
-		return idMovimiento;
+	
+	public Integer getId() {
+		return id;
 	}
-	public void setIdMovimiento(Integer idMovimiento) {
-		this.idMovimiento = idMovimiento;
+	public void setId(Integer id) {
+		this.id = id;
 	}
-	public TipoMovimiento getTipo() {
+	public TipoMovimiento getTipoMovimiento() {
 		return tipoMovimiento;
 	}
-	public void setTipo(TipoMovimiento tipoMovimiento) {
+	public void setTipoMovimiento(TipoMovimiento tipoMovimiento) {
 		this.tipoMovimiento = tipoMovimiento;
 	}
 	public Categoria getCategoria() {
