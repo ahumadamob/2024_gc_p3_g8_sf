@@ -13,9 +13,9 @@ public class Producto {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-	private String Descripcion;
-	private String CodigoDeBarra;
-	private Boolean Disponibilidad;
+	private String descripcion;
+	private String codigoDeBarra;
+	private Boolean disponibilidad;
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private Categoria categoria;
@@ -40,22 +40,22 @@ public class Producto {
 		return categoria;
 	}
 	public String getDescripcion() {
-		return Descripcion;
+		return descripcion;
 	}
 	public void setDescripcion(String descripcion) {
-		Descripcion = descripcion;
+		this.descripcion = descripcion;
 	}
 	public Boolean getDisponibilidad() {
-		return Disponibilidad;
+		return disponibilidad;
 	}
 	public void setDisponibilidad(Boolean disponibilidad) {
-		Disponibilidad = disponibilidad;
+		this.disponibilidad = disponibilidad;
 	}
 	public String getCodigoDeBarra() {
-		return CodigoDeBarra;
+		return codigoDeBarra;
 	}
 	public void setCodigoDeBarra(String codigoDeBarra) {
-		CodigoDeBarra = codigoDeBarra;
+		this.codigoDeBarra = codigoDeBarra;
 	}
 	
 
