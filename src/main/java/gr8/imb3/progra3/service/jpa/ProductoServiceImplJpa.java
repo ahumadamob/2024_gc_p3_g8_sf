@@ -39,7 +39,7 @@ public class ProductoServiceImplJpa implements IProductoService{
 		//Con la funcion .save, y envandole el objeto obtenido, se guarda ese objeto en la tabla
 		repo.save(producto);
 		//Finalmente devuelve el objeto para mostrarlo en la consola
-		return repo.findById(producto.getIdProducto()).orElse(null);
+		return repo.findById(producto.getId()).orElse(null);
 	}
 	
 	//Este metodo devuelve vacio, y recibe como parametro un id

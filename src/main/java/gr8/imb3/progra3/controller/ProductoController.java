@@ -45,8 +45,8 @@ public class ProductoController {
 	
 	@PostMapping
 	public ResponseEntity<APIResponse<Producto>> guardarProducto(@RequestBody Producto producto) {
-		if(productoService.existe(producto.getIdProducto())) {
-			return ResponseUtil.badRequest("Ya existe el producto con el id: " + producto.getIdProducto() + ".");
+		if(productoService.existe(producto.getId())) {
+			return ResponseUtil.badRequest("Ya existe el producto con el id: " + producto.getId() + ".");
 		}else {
 			return ResponseUtil.created(productoService.guardarProducto(producto));
 		}
@@ -54,10 +54,10 @@ public class ProductoController {
 	
 	@PutMapping	
 	public ResponseEntity<APIResponse<Producto>> modificarProducto(@RequestBody Producto producto) {
-		if(productoService.existe(producto.getIdProducto())) {
+		if(productoService.existe(producto.getId())) {
 			return ResponseUtil.success(productoService.guardarProducto(producto));
 		}else {
-			return ResponseUtil.badRequest("No existe producto con id: " + producto.getIdProducto() + ".");
+			return ResponseUtil.badRequest("No existe producto con id: " + producto.getId() + ".");
 		}
 	}
 	
