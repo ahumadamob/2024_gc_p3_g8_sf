@@ -54,6 +54,18 @@ public class MovimientoController {
 		}
 	}
 	
+	@GetMapping("/{idProducto}/movimientos")
+	public ResponseEntity<APIResponse<List<Movimiento>>> mostrarMovimientosDeProducto(@PathVariable("idProducto") Integer idProducto){
+		if(service.existe(idProducto)) {
+	
+			return ResponseUtil.success(service.mostrarMovimientosDeProducto(idProducto));	
+		}else {
+			
+			return ResponseUtil.notFound("Este producto no tiene movimientos asociados.");
+				
+		}
+	}
+	
 	@PostMapping
 	public ResponseEntity<APIResponse<Movimiento>> crearMovimiento(@RequestBody Movimiento movimiento) {
 		if(service.existe(movimiento.getId())) {
