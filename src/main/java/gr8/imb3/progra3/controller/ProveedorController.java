@@ -2,7 +2,9 @@ package gr8.imb3.progra3.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.antlr.v4.runtime.misc.Array2DHashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,10 +27,10 @@ import jakarta.validation.ConstraintViolationException;
 @RestController 
 @RequestMapping("/api/v1/proveedores")
 public class ProveedorController {
-	
+
 	@Autowired
 	IProveedorService proveedorService;
-	
+
 	@Autowired
 	ICategoriaService categoriaService;
 
@@ -69,11 +71,11 @@ public class ProveedorController {
 		}
 
 	}
- 	
+
  	@PutMapping("/{proveedorId}/categorias")
 	public ResponseEntity<APIResponse<Proveedor>> asociarCategoriaProveedor(@RequestBody List<Integer> idCategorias, @PathVariable("proveedorId") Integer idProveedor) {
 		if(proveedorService.exists(idProveedor)) {
-			List<Categoria> categoriasValidas = new ArrayList<>();
+			Set<Categoria> categoriasValidas = new Array2DHashSet<>();
 			List<Integer> categoriasInvalidas = new ArrayList<>();
 			for (Integer id : idCategorias) {
 				if (categoriaService.existe(id)) {
@@ -85,20 +87,20 @@ public class ProveedorController {
 			}
 			if (!categoriasValidas.isEmpty()){
 				Proveedor proveedorAfectado = proveedorService.buscarPorId(idProveedor);
-				proveedorAfectado.setCategorias(categoriasValidas);
+				proveedorAfectado.setCategoria(categoriasValidas);
 				return ResponseUtil.success(proveedorService.guardar(proveedorAfectado));
 			}
 			else {
 				return ResponseUtil.badRequest("No existen las categorias con los id: "+categoriasInvalidas+".");
 			}
-			
+
 		}
 		else {
 			return ResponseUtil.badRequest("No existe el proveedor con el id: "+idProveedor+".");
 		}
 
 	}
- 	
+
  	@DeleteMapping("/{id}")	
 	public ResponseEntity<APIResponse<Proveedor>> eliminarProveedor(@PathVariable("id") Integer id) {
 		if(proveedorService.exists(id)) {
