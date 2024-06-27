@@ -1,7 +1,10 @@
 package gr8.imb3.progra3.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.antlr.v4.runtime.misc.Array2DHashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,17 +17,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import gr8.imb3.progra3.entity.Categoria;
 import gr8.imb3.progra3.entity.Proveedor;
+import gr8.imb3.progra3.service.ICategoriaService;
 import gr8.imb3.progra3.service.IProveedorService;
 import jakarta.validation.ConstraintViolationException;
 
 
 @RestController 
-@RequestMapping("/api/v1/Proveedor")
+@RequestMapping("/api/v1/proveedores")
 public class ProveedorController {
-	
+
 	@Autowired
 	IProveedorService proveedorService;
+
+	@Autowired
+	ICategoriaService categoriaService;
 
  	@GetMapping //Anotacion Usada para indicar que el metodo siguiende debe ejecutarse al ser llamado el GET.
  	public ResponseEntity<APIResponse<List<Proveedor>>> mostrarTodos() { //Metodo publico que devulve un objeto del tipo ResponseEntity<APIResponse<List<Proveedor>>> llamado mostrarTodos.
@@ -63,6 +71,36 @@ public class ProveedorController {
 		}
 
 	}
+
+ 	@PutMapping("/{proveedorId}/categorias")
+	public ResponseEntity<APIResponse<Proveedor>> asociarCategoriaProveedor(@RequestBody List<Integer> idCategorias, @PathVariable("proveedorId") Integer idProveedor) {
+		if(proveedorService.exists(idProveedor)) {
+			Set<Categoria> categoriasValidas = new Array2DHashSet<>();
+			List<Integer> categoriasInvalidas = new ArrayList<>();
+			for (Integer id : idCategorias) {
+				if (categoriaService.existe(id)) {
+					categoriasValidas.add(categoriaService.buscarPorId(id));
+				}
+				else {
+					categoriasInvalidas.add(id);
+				}
+			}
+			if (!categoriasValidas.isEmpty()){
+				Proveedor proveedorAfectado = proveedorService.buscarPorId(idProveedor);
+				proveedorAfectado.setCategoria(categoriasValidas);
+				return ResponseUtil.success(proveedorService.guardar(proveedorAfectado));
+			}
+			else {
+				return ResponseUtil.badRequest("No existen las categorias con los id: "+categoriasInvalidas+".");
+			}
+
+		}
+		else {
+			return ResponseUtil.badRequest("No existe el proveedor con el id: "+idProveedor+".");
+		}
+
+	}
+
  	@DeleteMapping("/{id}")	
 	public ResponseEntity<APIResponse<Proveedor>> eliminarProveedor(@PathVariable("id") Integer id) {
 		if(proveedorService.exists(id)) {

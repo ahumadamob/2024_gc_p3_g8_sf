@@ -28,15 +28,10 @@ public class Proveedor {
 	private Integer cuil;
 	private String personaContacto;
 	private String comentario;
-@ManyToMany
-@JoinTable(name="categoria_proveedor",
-		joinColumns = {@JoinColumn(name = "proveedor_id")},
-		inverseJoinColumns = {@JoinColumn(name = "categoria_id")})
-private Set<Categoria> categoria = new HashSet<>();
+	@ManyToMany
+	@JoinTable(name="categoria_proveedor", joinColumns = {@JoinColumn(name = "proveedor_id")}, inverseJoinColumns = {@JoinColumn(name = "categoria_id")})
+	private Set<Categoria> categorias = new HashSet<>();
 
-		
-	
-	
 	public Integer getId() {
 		return id;
 	}
@@ -90,5 +85,11 @@ private Set<Categoria> categoria = new HashSet<>();
 	}
 	public void setComentario(String comentario) {
 		this.comentario = comentario;
+	}
+	public Set<Categoria> getCategoria() {
+		return categorias;
+	}
+	public void setCategoria(Set<Categoria> categoria) {
+		this.categorias.addAll(categoria);
 	}
 }
