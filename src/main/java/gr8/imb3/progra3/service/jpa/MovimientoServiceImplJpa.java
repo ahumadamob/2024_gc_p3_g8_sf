@@ -40,4 +40,10 @@ public class MovimientoServiceImplJpa implements IMovimientoService {
 	public boolean existe(Integer id) {
 		return repo.existsById(id); 
 	}
+
+	@Override
+	public List<Movimiento> mostrarMovimientosDeProducto(Integer idProducto) {
+		// TODO Auto-generated method stub
+		return repo.findByProductoId(idProducto);
+	}
 }

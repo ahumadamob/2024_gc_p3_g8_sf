@@ -11,4 +11,5 @@ public interface IMovimientoService {
 	public Movimiento guardar(Movimiento movimiento);
 	public void eliminar(Integer idMovimiento);
 	public boolean existe(Integer id);
+	public List<Movimiento> mostrarMovimientosDeProducto(Integer idProducto);
 }
