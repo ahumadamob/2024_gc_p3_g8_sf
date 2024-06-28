@@ -13,6 +13,7 @@ public interface IEmpleadoService {
 	public boolean existe (Integer id);
 	public Empleado buscarPorDni(Integer dni);
 	public Empleado activar_desactivar(Integer id);
+	public List<Empleado> buscarSupervisadosPorId(Integer id);
 }
 	
 

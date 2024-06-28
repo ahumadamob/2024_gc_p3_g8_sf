@@ -59,4 +59,9 @@ public class EmpleadoServiceImplJpa implements IEmpleadoService {
 	    }
 		return empleado;
 	}
+
+	@Override
+	public List<Empleado> buscarSupervisadosPorId(Integer id) {
+		 return repo.findBySupervisorId(id);
+	}
 }
