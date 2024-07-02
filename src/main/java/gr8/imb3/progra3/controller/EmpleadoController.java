@@ -1,6 +1,8 @@
 package gr8.imb3.progra3.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -118,4 +120,17 @@ public class EmpleadoController {
 			return ResponseUtil.notFound("No se encontro el empleado con el id: " + id + ".");
 		}
 	}
+
+@GetMapping("/{empleadoId}/supervisados")
+public ResponseEntity<APIResponse<Map<String, Object>>> obtenerEmpleadoYSupervisados(@PathVariable Integer empleadoId) {
+    if (!service.existe(empleadoId)) {
+        return ResponseUtil.notFound("No se encontro el empleado con el id: " + empleadoId + ".");
+    }
+    Empleado empleado = service.buscarPorId(empleadoId);
+    List<Empleado> supervisados = service.buscarSupervisadosPorId(empleadoId);
+    Map<String, Object> response = new HashMap<>();
+    response.put("empleado", empleado);
+    response.put("supervisados", supervisados);
+    return ResponseUtil.success(response);
+}
 }
