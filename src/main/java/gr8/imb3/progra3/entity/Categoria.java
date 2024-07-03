@@ -22,7 +22,7 @@ public class Categoria{
 	@Size(max = 40, message = "El nombre no debe superar los 40 caracteres")
 	private String nombre;
 	private boolean habilitado;
-	 @ManyToMany(mappedBy = "categorias")
+	 @ManyToMany(mappedBy = "categoria")
 	 private Set<Proveedor> proveedores = new HashSet<>();
 	//id
 	public Integer getId() {

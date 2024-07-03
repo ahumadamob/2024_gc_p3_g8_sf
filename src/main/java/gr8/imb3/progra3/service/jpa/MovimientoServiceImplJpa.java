@@ -1,4 +1,5 @@
 package gr8.imb3.progra3.service.jpa;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -8,14 +9,13 @@ import gr8.imb3.progra3.entity.Movimiento;
 import gr8.imb3.progra3.repository.MovimientoRepository;
 import gr8.imb3.progra3.service.IMovimientoService;
 
-
 @Service
 @Primary
 public class MovimientoServiceImplJpa implements IMovimientoService {
 
 	@Autowired
 	MovimientoRepository repo;
-	
+
 	@Override
 	public List<Movimiento> buscar() {
 		return repo.findAll();
@@ -23,7 +23,7 @@ public class MovimientoServiceImplJpa implements IMovimientoService {
 
 	@Override
 	public Movimiento buscarPorId(Integer id) {
-		return repo.findById(id).orElse(null);	
+		return repo.findById(id).orElse(null);
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class MovimientoServiceImplJpa implements IMovimientoService {
 		repo.deleteById(idMovimiento);
 	}
 
-	@Override 
+	@Override
 	public boolean existe(Integer id) {
-		return repo.existsById(id); 
+		return repo.existsById(id);
 	}
 }

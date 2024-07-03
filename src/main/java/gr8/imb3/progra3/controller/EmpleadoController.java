@@ -3,6 +3,7 @@ package gr8.imb3.progra3.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,14 +25,9 @@ public class EmpleadoController {
 	IEmpleadoService service;
 
 	@GetMapping
-
 	public ResponseEntity<APIResponse<List<Empleado>>> mostrarTodos() {
-		List<Empleado> proveedores = service.buscar();
-		if (!proveedores.isEmpty()) {
-			return ResponseUtil.success(proveedores);
-		} else {
-			return ResponseUtil.notFound("No se encontraron empleados.");
-		}
+	APIResponse<List<Empleado>> response = new APIResponse<List<Empleado>>(200, null, service.buscar());
+	return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{id}")
@@ -64,14 +60,7 @@ public class EmpleadoController {
 		}
 	}
 
-	/*
-	 * @PostMapping public Empleado createEmpleado(@RequestBody Empleado empleado) {
-	 * if (this.E) {
-	 * 
-	 * return this.service.guardar(empleado); } return null;
-	 * 
-	 * }
-	 */
+	
 
 	@PutMapping("/{id}")
 	public ResponseEntity<APIResponse<Empleado>> modificarEmpleado(@RequestBody Empleado empleado) {

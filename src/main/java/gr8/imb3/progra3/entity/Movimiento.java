@@ -135,5 +135,5 @@ public class Movimiento {
 	public void setCantidad_despues(int cantidad_despues) {
 		this.cantidad_despues = cantidad_despues;
 	}
-	
+
 }
