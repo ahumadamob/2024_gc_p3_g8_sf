@@ -56,4 +56,12 @@ public class ProductoServiceImplJpa implements IProductoService{
 		//Devuelve false si no existe el registro, y de lo contrario devuelve true
 		return repo.existsById(id);
 	}
+	@Override
+	public List<Producto> mostrarDisponibles(){
+		return repo.getByDisponibilidad(true);
+	}
+	@Override
+	public List<Producto> mostrarNoDisponibles(){
+		return repo.getByDisponibilidad(false);
+	}
 }
