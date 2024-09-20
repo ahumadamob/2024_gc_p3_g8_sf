@@ -11,4 +11,6 @@ public interface IProductoService {
 	public Producto guardarProducto(Producto producto);
 	public void eliminarProducto(Integer id);
 	public boolean existe(Integer id);
+	public List<Producto> mostrarDisponibles();
+	public List<Producto> mostrarNoDisponibles();
 }
