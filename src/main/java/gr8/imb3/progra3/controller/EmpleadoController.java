@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gr8.imb3.progra3.entity.Empleado;
 import gr8.imb3.progra3.service.IEmpleadoService;
+import jakarta.validation.ConstraintViolationException;
 
 @RestController
 @RequestMapping("/api/v1/Empleado")
@@ -66,15 +68,6 @@ public class EmpleadoController {
 		}
 	}
 
-	/*
-	 * @PostMapping public Empleado createEmpleado(@RequestBody Empleado empleado) {
-	 * if (this.E) {
-	 * 
-	 * return this.service.guardar(empleado); } return null;
-	 * 
-	 * }
-	 */
-
 	@PutMapping("/{id}")
 	public ResponseEntity<APIResponse<Empleado>> modificarEmpleado(@RequestBody Empleado empleado) {
 		if (service.existe(empleado.getId())) {
@@ -121,16 +114,25 @@ public class EmpleadoController {
 		}
 	}
 
-@GetMapping("/{empleadoId}/supervisados")
-public ResponseEntity<APIResponse<Map<String, Object>>> obtenerEmpleadoYSupervisados(@PathVariable Integer empleadoId) {
-    if (!service.existe(empleadoId)) {
-        return ResponseUtil.notFound("No se encontro el empleado con el id: " + empleadoId + ".");
+	@GetMapping("/{empleadoId}/supervisados")
+	public ResponseEntity<APIResponse<Map<String, Object>>> obtenerEmpleadoYSupervisados(
+			@PathVariable Integer empleadoId) {
+		if (!service.existe(empleadoId)) {
+			return ResponseUtil.notFound("No se encontro el empleado con el id: " + empleadoId + ".");
+		}
+		Empleado empleado = service.buscarPorId(empleadoId);
+		List<Empleado> supervisados = service.buscarSupervisadosPorId(empleadoId);
+		Map<String, Object> response = new HashMap<>();
+		response.put("empleado", empleado);
+		response.put("supervisados", supervisados);
+		return ResponseUtil.success(response);
+	}
+	@ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex){
+        return ResponseUtil.handleConstraintException(ex);
     }
-    Empleado empleado = service.buscarPorId(empleadoId);
-    List<Empleado> supervisados = service.buscarSupervisadosPorId(empleadoId);
-    Map<String, Object> response = new HashMap<>();
-    response.put("empleado", empleado);
-    response.put("supervisados", supervisados);
-    return ResponseUtil.success(response);
-}
+    @ExceptionHandler(Exception.class)
+   public ResponseEntity<APIResponse<Object>> handleException(Exception ex) {
+       return ResponseUtil.badRequest(ex.getMessage());
+   }
 }

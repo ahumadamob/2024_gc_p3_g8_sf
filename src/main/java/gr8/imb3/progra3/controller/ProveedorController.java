@@ -34,14 +34,14 @@ public class ProveedorController {
 	@Autowired
 	ICategoriaService categoriaService;
 
- 	@GetMapping //Anotacion Usada para indicar que el metodo siguiende debe ejecutarse al ser llamado el GET.
- 	public ResponseEntity<APIResponse<List<Proveedor>>> mostrarTodos() { //Metodo publico que devulve un objeto del tipo ResponseEntity<APIResponse<List<Proveedor>>> llamado mostrarTodos.
- 		List<Proveedor> proveedores = proveedorService.buscar(); //Creacion de una variable del tipo List<Proveedor> llamada proveedores, indicando que es igual a una lista de proveedores si es que existe si no el valor de la variable sera null.
- 		if(!proveedores.isEmpty()) { //Comprobarion si NO esta vacio, de la lista de proveedores almacenada en la variable proveedores.
- 			return ResponseUtil.success(proveedores); //Devolucion del metodo si la lista de proveedores no estaba vacia.
+ 	@GetMapping
+ 	public ResponseEntity<APIResponse<List<Proveedor>>> mostrarTodos() {
+ 		List<Proveedor> proveedores = proveedorService.buscar();
+ 		if(!proveedores.isEmpty()) {
+ 			return ResponseUtil.success(proveedores);
  		}
- 		else { //Bloque de codigo a ejecutarse si falla la comprobacion anterior.
- 			return ResponseUtil.notFound("No se encontraron proveedores."); //Devolucion del metodo si la lista de proveedores si estaba vacia.
+ 		else {
+ 			return ResponseUtil.notFound("No se encontraron proveedores.");
  		}
 	}
  	@GetMapping("/{id}")
@@ -51,7 +51,6 @@ public class ProveedorController {
 		}else {
 			return ResponseUtil.notFound("No se encontro el proveedor con el id: "+id+".");	
 		}
-	
 	}
  	@PostMapping
     public ResponseEntity<APIResponse<Proveedor>> crearProveedor(@RequestBody Proveedor proveedor) {
@@ -69,9 +68,7 @@ public class ProveedorController {
 		else {
 			return ResponseUtil.badRequest("No existe el proveedor con el id: "+proveedor.getId()+".");
 		}
-
 	}
-
  	@PutMapping("/{proveedorId}/categorias")
 	public ResponseEntity<APIResponse<Proveedor>> asociarCategoriaProveedor(@RequestBody List<Integer> idCategorias, @PathVariable("proveedorId") Integer idProveedor) {
 		if(proveedorService.exists(idProveedor)) {
@@ -93,14 +90,11 @@ public class ProveedorController {
 			else {
 				return ResponseUtil.badRequest("No existen las categorias con los id: "+categoriasInvalidas+".");
 			}
-
 		}
 		else {
 			return ResponseUtil.badRequest("No existe el proveedor con el id: "+idProveedor+".");
 		}
-
 	}
-
  	@DeleteMapping("/{id}")	
 	public ResponseEntity<APIResponse<Proveedor>> eliminarProveedor(@PathVariable("id") Integer id) {
 		if(proveedorService.exists(id)) {
@@ -111,16 +105,7 @@ public class ProveedorController {
 		}else {
 			return ResponseUtil.badRequest("No existe el proveedor con el id: "+id+".");		
 		}
-		
 	}
- 	@ExceptionHandler(ConstraintViolationException.class)
- 	public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex){
- 		return ResponseUtil.handleConstraintException(ex);
- 	}
- 	
- 	
- 	
- 	
  	@PostMapping("/habilitar/{id}")
 	public ResponseEntity<APIResponse<Proveedor>> habilitarProducto(@PathVariable("id") Integer id) {
 		if(proveedorService.exists(id)) {
@@ -168,6 +153,13 @@ public class ProveedorController {
 		}else {
 			return ResponseUtil.badRequest("No existe el proveedor con el id: "+id+".");		
 		}
-		
 	}
+ 	@ExceptionHandler(ConstraintViolationException.class)
+ 	public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex){
+ 		return ResponseUtil.handleConstraintException(ex);
+ 	}
+ 	@ExceptionHandler(Exception.class)
+    public ResponseEntity<APIResponse<Object>> handleException(Exception ex) {    	
+    	return ResponseUtil.badRequest(ex.getMessage());
+    }
  }
