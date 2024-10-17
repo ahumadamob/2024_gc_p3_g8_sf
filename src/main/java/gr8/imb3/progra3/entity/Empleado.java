@@ -11,11 +11,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-public class Empleado {
+public class Empleado extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
 	@NotBlank(message = "El nombre no puede estar vacío")
 	@Size(max = 40, message = "El nombre no debe superar los 40 caracteres")
 	private String nombre;
@@ -33,13 +30,6 @@ public class Empleado {
 	private Empleado supervisor;
 	private Date fechaContratacion;
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getNombre() {
 		return nombre;

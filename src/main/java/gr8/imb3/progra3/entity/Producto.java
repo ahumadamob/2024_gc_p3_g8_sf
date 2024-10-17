@@ -8,11 +8,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Producto {
+public class Producto  extends BaseEntity  {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	
 	private String descripcion;
 	private String codigoDeBarra;
 	private Boolean disponibilidad;
@@ -21,12 +19,7 @@ public class Producto {
 	private Categoria categoria;
 	private Integer cantidad;
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer idProducto) {
-		this.id = idProducto;
-	}
+	
 	public Integer getCantidad() {
 		return cantidad;
 	}

@@ -12,11 +12,9 @@ import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 
 @Entity
-public class Categoria{
+public class Categoria extends BaseEntity{
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	
 	
 	@NotBlank(message = "El nombre no puede estar vacio")
 	@Size(max = 40, message = "El nombre no debe superar los 40 caracteres")
@@ -24,13 +22,7 @@ public class Categoria{
 	private boolean habilitado;
 	 @ManyToMany(mappedBy = "categorias")
 	 private Set<Proveedor> proveedores = new HashSet<>();
-	//id
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	
 	//nombre
 	public String getNombre() {
