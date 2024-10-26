@@ -14,10 +14,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
 
 @Entity
-public class Movimiento {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+public class Movimiento  extends BaseEntity  {
+	
 	@Enumerated(EnumType.STRING)
     private TipoMovimiento tipoMovimiento;
 	@ManyToOne
@@ -50,12 +48,7 @@ public class Movimiento {
 	}
 	
 	
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	
 	public TipoMovimiento getTipoMovimiento() {
 		return tipoMovimiento;
 	}

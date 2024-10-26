@@ -16,11 +16,7 @@ import java.util.Set;
 
 
 @Entity
-public class Proveedor {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+public class Proveedor  extends BaseEntity {
 	
 	@NotBlank(message = "El nombre no puede estar vacío")
 	@Size(max = 50, message = "El nombre no debe superar los 50 caracteres") 
@@ -51,12 +47,7 @@ public class Proveedor {
 	@JoinTable(name="categoria_proveedor", joinColumns = {@JoinColumn(name = "proveedor_id")}, inverseJoinColumns = {@JoinColumn(name = "categoria_id")})
 	private Set<Categoria> categorias = new HashSet<>();
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
+
 	public String getNombre() {
 		return nombre;
 	}
