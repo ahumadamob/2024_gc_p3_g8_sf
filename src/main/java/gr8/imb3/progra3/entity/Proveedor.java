@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,13 +21,28 @@ public class Proveedor  extends BaseEntity {
 	@NotBlank(message = "El nombre no puede estar vacío")
 	@Size(max = 50, message = "El nombre no debe superar los 50 caracteres") 
 	private String  nombre;
-	private boolean habilitado;
-	private String direccion;
-	private Integer telefono;
-	private String correoElectronico;
-	private Integer cuil;
-	private String personaContacto;
-	private String comentario;
+	
+	@NotNull(message = "El estado habilitado no puede ser nulo")
+    private boolean habilitado;
+	
+    @NotBlank(message = "La dirección no puede estar vacía")
+    private String direccion;
+    
+    @NotNull(message = "El teléfono no puede ser nulo")
+    @Positive(message = "El número de teléfono debe ser positivo")
+    private Integer telefono;
+    
+    @NotBlank(message = "El correo electrónico no puede estar vacío")
+    private String correoElectronico;
+
+    @NotNull(message = "El CUIL no puede ser nulo")
+    @Positive(message = "El CUIL debe ser un número positivo")
+    private Integer cuil;
+
+    @NotBlank(message = "El nombre del proveedor de contacto no puede estar vacío")
+    private String personaContacto;
+    private String comentario;
+    
 	@ManyToMany
 	@JoinTable(name="categoria_proveedor", joinColumns = {@JoinColumn(name = "proveedor_id")}, inverseJoinColumns = {@JoinColumn(name = "categoria_id")})
 	private Set<Categoria> categorias = new HashSet<>();

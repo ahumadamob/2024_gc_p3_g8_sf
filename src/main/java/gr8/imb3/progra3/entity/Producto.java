@@ -6,17 +6,25 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 
 @Entity
 public class Producto  extends BaseEntity  {
 	
 	
 	private String descripcion;
+	@NotBlank
+	@Size(min= 1, max = 40, message = "El código de barra no debe superar los 40 caracteres ni debe ser menor a 1 caracter")
 	private String codigoDeBarra;
+	@NotBlank
 	private Boolean disponibilidad;
+	@NotBlank
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private Categoria categoria;
+	@NotBlank
 	private Integer cantidad;
 	
 	
