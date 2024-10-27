@@ -81,6 +81,26 @@ public class EmpleadoController {
 		}
 
 	}
+	
+	@PutMapping("/{id}/cambiar-rol")
+	public ResponseEntity<APIResponse<Empleado>> cambiarTipoPuesto(@PathVariable Integer id, @RequestBody Map<String, String> requestBody) {
+	    String tipoPuesto = requestBody.get("tipoPuesto");
+
+	    if (service.existe(id)) {
+	        if ("empleado".equals(tipoPuesto) || "supervisor".equals(tipoPuesto)) {
+	            Empleado empleado = service.buscarPorId(id);
+	            empleado.setTipoPuesto(tipoPuesto);
+	            return ResponseUtil.success(service.guardar(empleado));
+	        } else {
+	            return ResponseUtil.badRequest(
+	                "El tipo de puesto / rol '" + tipoPuesto + "' no es válido.");
+	        }
+	    } else {
+	        return ResponseUtil.badRequest(
+	            "No existe el proveedor con el id: " + id);
+	    }
+	}
+
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<APIResponse<Empleado>> eliminarEmpleado(@PathVariable("id") Integer id) {
