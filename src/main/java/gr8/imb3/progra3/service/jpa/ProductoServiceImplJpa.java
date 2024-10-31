@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import gr8.imb3.progra3.entity.Producto;
 import gr8.imb3.progra3.repository.ProductoRepository;
 import gr8.imb3.progra3.service.IProductoService;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Primary
@@ -63,5 +65,22 @@ public class ProductoServiceImplJpa implements IProductoService{
 	@Override
 	public List<Producto> mostrarNoDisponibles(){
 		return repo.getByDisponibilidad(false);
+	}
+	@Transactional
+	@Override
+	public Producto actualizarPrecio(Integer id, Double nuevoPrecio) {
+	    Producto producto = repo.findById(id)
+	            .orElseThrow(() -> new NoSuchElementException("Producto no encontrado"));
+
+	    if (nuevoPrecio <= 0) {
+	        throw new IllegalArgumentException("El precio debe ser un valor positivo.");
+	    }
+
+	    producto.setPrecio(nuevoPrecio); // Actualizar el precio
+	    
+	    // Guarda el producto y asegura que el cambio se refleje en la base de datos
+	    Producto productoActualizado = repo.save(producto); 
+	    repo.flush(); // Fuerza a que Hibernate ejecute la instrucción de actualización inmediatamente
+	    return productoActualizado;
 	}
 }

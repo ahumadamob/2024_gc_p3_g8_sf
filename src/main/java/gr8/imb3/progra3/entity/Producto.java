@@ -7,12 +7,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
 @Entity
 public class Producto {
-	@NotBlank
+	@NotNull
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
@@ -22,15 +23,23 @@ public class Producto {
 	@NotBlank
 	@Size(min= 1, max = 40, message = "El código de barra no debe superar los 40 caracteres ni debe ser menor a 1 caracter")
 	private String codigoDeBarra;
-	@NotBlank
+	@NotNull
 	private Boolean disponibilidad;
-	@NotBlank
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "idCategoria")
 	private Categoria categoria;
-	@NotBlank
+	@NotNull
 	private Integer cantidad;
+	@NotNull
+	private Double precio;
 	
+	public Double getPrecio() {
+		return precio;
+	}
+	public void setPrecio(Double precio) {
+		this.precio = precio;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -67,6 +76,7 @@ public class Producto {
 	public void setCodigoDeBarra(String codigoDeBarra) {
 		this.codigoDeBarra = codigoDeBarra;
 	}
+
 	
 
 }

@@ -9,5 +9,4 @@ import gr8.imb3.progra3.entity.Producto;
 public interface ProductoRepository extends JpaRepository<Producto,Integer>{
 	
 	public List<Producto> getByDisponibilidad(boolean disponibilidad);
-
 }
