@@ -12,13 +12,15 @@ import jakarta.validation.constraints.Size;
 
 
 @Entity
-public class Producto {
+
+public class Producto  extends BaseEntity  {
 	@NotNull
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	@NotBlank
 	@Size(max = 40, message = "La descripción no debe superar los 40 caracteres ni debe ser menor a 1 caracter")
+
 	private String descripcion;
 	@NotBlank
 	@Size(min= 1, max = 40, message = "El código de barra no debe superar los 40 caracteres ni debe ser menor a 1 caracter")
@@ -46,6 +48,7 @@ public class Producto {
 	public void setId(Integer idProducto) {
 		this.id = idProducto;
 	}
+
 	public Integer getCantidad() {
 		return cantidad;
 	}
