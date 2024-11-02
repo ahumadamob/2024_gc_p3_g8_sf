@@ -21,7 +21,7 @@ import gr8.imb3.progra3.service.IMovimientoService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 
-//localhost:8080/api/imb3/movimiento
+//localhost:8080/api/imb3/movimientos
 
 @RestController
 @RequestMapping("/api/imb3/movimientos")
@@ -41,28 +41,21 @@ public class MovimientoController {
 	         }
 	    }
 	
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<APIResponse<Movimiento>> mostrarMovimientoPorId(@PathVariable("id") Integer id){
 		if(service.existe(id)) {
-	
 			return ResponseUtil.success(service.buscarPorId(id));	
 		}else {
-			
 			return ResponseUtil.notFound("No se encontro el Movimiento con el id: "+id+".");
-				
 		}
 	}
 	
 	@GetMapping("/{idProducto}/movimientos")
 	public ResponseEntity<APIResponse<List<Movimiento>>> mostrarMovimientosDeProducto(@PathVariable("idProducto") Integer idProducto){
 		if(service.existe(idProducto)) {
-	
 			return ResponseUtil.success(service.mostrarMovimientosDeProducto(idProducto));	
 		}else {
-			
 			return ResponseUtil.notFound("Este producto no tiene movimientos asociados.");
-				
 		}
 	}
 	
@@ -70,13 +63,9 @@ public class MovimientoController {
 	public ResponseEntity<APIResponse<Movimiento>> crearMovimiento(@RequestBody Movimiento movimiento) {
 		if(service.existe(movimiento.getId())) {
 			  return ResponseUtil.badRequest("Ya existe el movimiento con el id: "+ movimiento.getId() +".");
-			
-		}else {
-						
+		}else {		
 			return ResponseUtil.created(service.guardar(movimiento));
-		
 		}			
-		
 	}
 	
 	@PutMapping	
@@ -86,34 +75,50 @@ public class MovimientoController {
 			  return ResponseUtil.success(service.guardar(movimiento));
 		}else {
 			 return ResponseUtil.badRequest("No existe el movimiento con el id: "+movimiento.getId()+".");
-			
 		}
-
 	}
-	// @DeleteMapping es el verbo para eliminar un objeto el cual recibe un id por url 
+	
+	// @DeleteMapping es el verbo para eliminar un objeto el cual recibe un id por url
+	
 	@DeleteMapping("/{id}")	
 	// el metodo devuelve un ResponseEntity de la entidad movimiento,y recibe como parametro el id de la url 
+	
 	public ResponseEntity<APIResponse<Movimiento>> eliminarMovimiento(@PathVariable("id") Integer id) {
-		// verifica en el metodo existe 
-		//si existe un registro con esa id...
+		// verifica en el metodo existe. si existe un registro con esa id...
+		
 		if(service.existe(id)) {
 			//Crea una variable temporal con el objeto a elominar
+			
 			 Movimiento movimientoEliminado = service.buscarPorId(id);
 			 //elimina con el objeto con el id recibido
+			 
 	            service.eliminar(id);
 	            //retorna un respuesta de tupo success devolviendo el objeto eliminado
+	            
 	            return ResponseUtil.success(movimientoEliminado);
 		}
 		// si no existe un registro con esa id...
 		else {
 			// se muestra el mensaje "No existe un movimiento con el id =" y muestra el id del movimiento buscado
-	          return ResponseUtil.badRequest("No existe el movimiento con el id: "+id+".");
-					
+	          return ResponseUtil.badRequest("No existe el movimiento con el id: "+id+".");		
 		}
-		
 	}
 	
-	
+	@PutMapping("/{id}/anular")
+	public ResponseEntity<APIResponse<Movimiento>> anularMovimiento(@PathVariable("id") Integer id) {
+		if(service.existe(id)) {
+			Movimiento movimiento = service.buscarPorId(id);
+			if(movimiento.isAnulado()) {
+				return ResponseUtil.badRequest("El movimiento ya se encuentra anulado.");
+			}
+			else {
+				movimiento.setAnulado(true);
+				return ResponseUtil.success(service.guardar(movimiento));
+			}
+		}else {
+			 return ResponseUtil.badRequest("No existe el movimiento con el id: " + id + ".");
+		}
+	}
 	
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<APIResponse<?>> handleException(ConstraintViolationException ex){
