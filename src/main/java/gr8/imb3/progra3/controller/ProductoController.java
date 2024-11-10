@@ -1,9 +1,13 @@
 package gr8.imb3.progra3.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,4 +108,29 @@ public class ProductoController {
    public ResponseEntity<APIResponse<Object>> handleException(Exception ex) {
        return ResponseUtil.badRequest(ex.getMessage());
    }
+    @PutMapping("/{id}/cambiar-precio")
+    public ResponseEntity<APIResponse<Producto>> cambiarPrecio(
+            @PathVariable Integer id,
+            @RequestBody Map<String, Double> requestBody) throws JpaSystemException {
+        Double nuevoPrecio = requestBody.get("nuevoPrecio");
+
+        if (nuevoPrecio == null) {
+            return ResponseUtil.badRequest("El campo 'nuevoPrecio' es requerido.");
+        }
+
+        try {
+            Producto productoActualizado = productoService.actualizarPrecio(id, nuevoPrecio);
+            return ResponseUtil.success(productoActualizado);
+
+        } catch (NoSuchElementException e) {
+            return ResponseUtil.notFound("Producto no encontrado.");
+        } catch (IllegalArgumentException e) {
+            return ResponseUtil.badRequest(e.getMessage());
+        } catch (DataAccessException e) {
+            // Manejar problemas de JPA como restricciones de base de datos
+            return ResponseUtil.internalServerError("Error de base de datos: " + ((Throwable) e).getMessage());
+        } catch (Exception e) {
+            return ResponseUtil.internalServerError("Error interno al procesar la solicitud.");
+        }
+    }
 }

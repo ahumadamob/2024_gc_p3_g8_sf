@@ -13,4 +13,6 @@ public interface IProductoService {
 	public boolean existe(Integer id);
 	public List<Producto> mostrarDisponibles();
 	public List<Producto> mostrarNoDisponibles();
+	public Producto actualizarPrecio(Integer id, Double nuevoPrecio);
+	
 }
