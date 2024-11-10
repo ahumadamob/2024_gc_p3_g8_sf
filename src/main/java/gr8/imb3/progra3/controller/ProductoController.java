@@ -66,6 +66,26 @@ public class ProductoController {
 			return ResponseUtil.badRequest("No existe producto con id: " + producto.getId() + ".");
 		}
 	}
+		
+		@PutMapping("/{id}/actualizarstock")	
+		public ResponseEntity<APIResponse<Producto>> actualizarStock(@RequestBody Producto producto, @PathVariable("id") Integer id) {
+			if(productoService.existe(id)) {
+				if(producto.getCantidad() < 0) {
+				  return ResponseUtil.badRequest("No se aceptan numeros negativos.");
+				}
+				else {
+					Producto p = productoService.buscarProductoPorId(id);
+					p.setCantidad(producto.getCantidad());
+				
+					return ResponseUtil.success(productoService.guardarProducto(p));
+				}
+				
+				
+			}else {
+				return ResponseUtil.badRequest("No existe producto con id: " + id + ".");
+			}
+		}
+	
 	
 	@DeleteMapping("/{id}")	
 	public ResponseEntity<APIResponse<Producto>> eliminarProducto(@PathVariable("id") Integer id) {
