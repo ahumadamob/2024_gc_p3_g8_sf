@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Movimiento  extends BaseEntity  {
@@ -39,6 +40,8 @@ public class Movimiento  extends BaseEntity  {
 	private int factura;
 	private int cantidad_antes;
 	private int cantidad_despues;
+	@NotNull(message = "El campo 'anulado' no puede ser nulo")
+	private boolean anulado;
 	
 	public enum TipoMovimiento {
 	    COMPRA,
@@ -127,5 +130,10 @@ public class Movimiento  extends BaseEntity  {
 	public void setCantidad_despues(int cantidad_despues) {
 		this.cantidad_despues = cantidad_despues;
 	}
-	
+	public boolean isAnulado() {
+		return anulado;
+	}
+	public void setAnulado(boolean anulado) {
+		this.anulado = anulado;
+	}
 }
