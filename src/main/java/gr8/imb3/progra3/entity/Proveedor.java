@@ -1,9 +1,6 @@
 package gr8.imb3.progra3.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -34,6 +31,9 @@ public class Proveedor  extends BaseEntity {
     
     @NotBlank(message = "El correo electrónico no puede estar vacío")
     private String correoElectronico;
+    
+    @NotBlank(message = "La razón social no puede estar vacía")
+    private String razonSocial;
 
     @NotNull(message = "El CUIL no puede ser nulo")
     @Positive(message = "El CUIL debe ser un número positivo")
@@ -102,4 +102,11 @@ public class Proveedor  extends BaseEntity {
 	public void setCategoria(Set<Categoria> categoria) {
 		this.categorias.addAll(categoria);
 	}
+	public String getRazonSocial() {
+		return razonSocial;
+	}
+	public void setRazonSocial(String razonSocial) {
+		this.razonSocial = razonSocial;
+	}
+	
 }

@@ -9,4 +9,5 @@ import gr8.imb3.progra3.entity.Proveedor;
 
 public interface ProveedorRepository extends JpaRepository<Proveedor, Integer> {
 	public List<Proveedor> getByHabilitado(boolean habilitado);
+	public int countByHabilitadoFalse();
 }

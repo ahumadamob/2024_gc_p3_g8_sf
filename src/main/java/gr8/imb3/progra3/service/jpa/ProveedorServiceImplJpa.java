@@ -61,4 +61,8 @@ public class ProveedorServiceImplJpa implements IProveedorService {
 	public List<Proveedor> mostrarDeshabilitados() {
 		return repo.getByHabilitado(false);
 	}
+	@Override
+	public int countDeshabilitados() {
+		return repo.countByHabilitadoFalse();
+	}
 }
