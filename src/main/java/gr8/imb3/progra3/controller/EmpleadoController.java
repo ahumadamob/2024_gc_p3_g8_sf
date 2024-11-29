@@ -19,140 +19,150 @@ import org.springframework.web.bind.annotation.RestController;
 import gr8.imb3.progra3.entity.Empleado;
 import gr8.imb3.progra3.service.IEmpleadoService;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/Empleado")
 public class EmpleadoController {
 
-	@Autowired
-	IEmpleadoService service;
+    // Inyección del servicio IEmpleadoService
+    @Autowired
+    IEmpleadoService service;
 
-	@GetMapping
+    // Endpoint POST para validar y guardar empleado
+    @PostMapping("/validar")
+    public ResponseEntity<APIResponse<Empleado>> validarYGuardarEmpleado(@RequestBody @Valid Empleado empleado) {
+        try {
+            // Llamamos al servicio para validar y guardar el empleado
+            Empleado empleadoGuardado = service.validarYGuardarEmpleado(empleado); // Usamos 'service' en lugar de 'empleadoService'
+            return ResponseUtil.created(empleadoGuardado);
+        } catch (Exception e) {
+            // Si ocurre algún error, lo capturamos y lo devolvemos en el formato adecuado
+            return ResponseUtil.badRequest(e.getMessage());
+        }
+    }
 
-	public ResponseEntity<APIResponse<List<Empleado>>> mostrarTodos() {
-		List<Empleado> proveedores = service.buscar();
-		if (!proveedores.isEmpty()) {
-			return ResponseUtil.success(proveedores);
-		} else {
-			return ResponseUtil.notFound("No se encontraron empleados.");
-		}
-	}
+    @GetMapping
+    public ResponseEntity<APIResponse<List<Empleado>>> mostrarTodos() {
+        List<Empleado> empleados = service.buscar();
+        if (!empleados.isEmpty()) {
+            return ResponseUtil.success(empleados);
+        } else {
+            return ResponseUtil.notFound("No se encontraron empleados.");
+        }
+    }
 
-	@GetMapping("/{id}")
+    @GetMapping("/{id}")
+    public ResponseEntity<APIResponse<Empleado>> mostrarEmpleadoPorId(@PathVariable Integer id) {
+        if (service.existe(id)) {
+            return ResponseUtil.success(service.buscarPorId(id));
+        } else {
+            return ResponseUtil.notFound("No se encontró el empleado con el id: " + id + ".");
+        }
+    }
 
-	public ResponseEntity<APIResponse<Empleado>> mostrarEmpleadoPorId(@PathVariable Integer id) {
-		if (service.existe(id)) {
-			return ResponseUtil.success(service.buscarPorId(id));
-		} else {
-			return ResponseUtil.notFound("No se encontro el empleado con el id: " + id + ".");
-		}
-	}
+    @PostMapping
+    public ResponseEntity<APIResponse<Empleado>> crearEmpleado(@RequestBody Empleado empleado) {
+        if (service.existe(empleado.getId())) {
+            return ResponseUtil.badRequest(
+                "Ya existe el empleado con el id: " + empleado.getId() + ". O con el dni: " + empleado.getDni());
+        } else {
+            Empleado empleadoCompararPorDni = service.buscarPorDni(empleado.getDni());
+            if (empleadoCompararPorDni == null) {
+                return ResponseUtil.created(service.guardar(empleado));
+            } else {
+                return ResponseUtil.badRequest("Ya existe el empleado con el id: " + empleado.getId()
+                    + ". O con el dni: " + empleado.getDni());
+            }
+        }
+    }
 
-	@PostMapping
+    @PutMapping("/{id}")
+    public ResponseEntity<APIResponse<Empleado>> modificarEmpleado(@RequestBody Empleado empleado) {
+        if (service.existe(empleado.getId())) {
+            Empleado empleadoCompararPorDni = service.buscarPorDni(empleado.getDni());
+            if ((empleadoCompararPorDni == null) || (empleadoCompararPorDni.getDni() == empleado.getDni())) {
+                return ResponseUtil.success(service.guardar(empleado));
+            } else {
+                return ResponseUtil.badRequest(
+                    "Ya existe el empleado con el dni: " + empleado.getDni());
+            }
+        } else {
+            return ResponseUtil.badRequest(
+                "No existe el empleado con el id: " + empleado.getId() + ". O con el dni: " + empleado.getDni());
+        }
+    }
 
-	public ResponseEntity<APIResponse<Empleado>> crearEmpleado(@RequestBody Empleado empleado) {
-		if (service.existe((empleado.getId()))) {
-			return ResponseUtil.badRequest(
-					"Ya existe el proveedor con el id: " + empleado.getId() + ". O con el dni: " + empleado.getDni());
-		} else {
-			Empleado empleadoCompararPorDni = service.buscarPorDni(empleado.getDni());
-			if (empleadoCompararPorDni == null) {
+    @PutMapping("/{id}/cambiar-rol")
+    public ResponseEntity<APIResponse<Empleado>> cambiarTipoPuesto(@PathVariable Integer id, @RequestBody Map<String, String> requestBody) {
+        String tipoPuesto = requestBody.get("tipoPuesto");
 
-				return ResponseUtil.created(service.guardar(empleado));
-			} else {
+        if (service.existe(id)) {
+            if ("empleado".equals(tipoPuesto) || "supervisor".equals(tipoPuesto)) {
+                Empleado empleado = service.buscarPorId(id);
+                empleado.setTipoPuesto(tipoPuesto);
+                return ResponseUtil.success(service.guardar(empleado));
+            } else {
+                return ResponseUtil.badRequest(
+                    "El tipo de puesto / rol '" + tipoPuesto + "' no es válido.");
+            }
+        } else {
+            return ResponseUtil.badRequest(
+                "No existe el empleado con el id: " + id);
+        }
+    }
 
-				return ResponseUtil.badRequest("Ya existe el proveedor con el id: " + empleado.getId()
-						+ ". O con el dni: " + empleado.getDni());
-			}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse<Empleado>> eliminarEmpleado(@PathVariable("id") Integer id) {
+        if (service.existe(id)) {
+            Empleado empleadoEliminado = service.buscarPorId(id);
+            service.eliminar(id);
+            return ResponseUtil.success(empleadoEliminado);
+        } else {
+            return ResponseUtil.badRequest("No existe el empleado con el id: " + id + ".");
+        }
+    }
 
-		}
-	}
+    @GetMapping("/dni/{dni}")
+    public ResponseEntity<APIResponse<Empleado>> mostrarEmpleadoPorDni(@PathVariable Integer dni) {
+        if (service.buscarPorDni(dni) != null) {
+            return ResponseUtil.success(service.buscarPorDni(dni));
+        } else {
+            return ResponseUtil.notFound("No se encontró el empleado con el dni: " + dni + ".");
+        }
+    }
 
-	@PutMapping("/{id}")
-	public ResponseEntity<APIResponse<Empleado>> modificarEmpleado(@RequestBody Empleado empleado) {
-		if (service.existe(empleado.getId())) {
-			Empleado empleadoCompararPorDni = service.buscarPorDni(empleado.getDni());
-			if ((empleadoCompararPorDni == null) || (empleadoCompararPorDni.getDni() == empleado.getDni()))
-				;
-			return ResponseUtil.success(service.guardar(empleado));
-		} else {
-			return ResponseUtil.badRequest(
-					"No existe el proveedor con el id: " + empleado.getId() + ". O con el dni: " + empleado.getDni());
-		}
+    @GetMapping("/activar_desactivar/{id}")
+    public ResponseEntity<APIResponse<Empleado>> activar_desactivar(@PathVariable Integer id) {
+        if (service.existe(id)) {
+            return ResponseUtil.success(service.activar_desactivar(id));
+        } else {
+            return ResponseUtil.notFound("No se encontró el empleado con el id: " + id + ".");
+        }
+    }
 
-	}
-	
-	@PutMapping("/{id}/cambiar-rol")
-	public ResponseEntity<APIResponse<Empleado>> cambiarTipoPuesto(@PathVariable Integer id, @RequestBody Map<String, String> requestBody) {
-	    String tipoPuesto = requestBody.get("tipoPuesto");
+    @GetMapping("/{empleadoId}/supervisados")
+    public ResponseEntity<APIResponse<Map<String, Object>>> obtenerEmpleadoYSupervisados(
+            @PathVariable Integer empleadoId) {
+        if (!service.existe(empleadoId)) {
+            return ResponseUtil.notFound("No se encontró el empleado con el id: " + empleadoId + ".");
+        }
+        Empleado empleado = service.buscarPorId(empleadoId);
+        List<Empleado> supervisados = service.buscarSupervisadosPorId(empleadoId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("empleado", empleado);
+        response.put("supervisados", supervisados);
+        return ResponseUtil.success(response);
+    }
 
-	    if (service.existe(id)) {
-	        if ("empleado".equals(tipoPuesto) || "supervisor".equals(tipoPuesto)) {
-	            Empleado empleado = service.buscarPorId(id);
-	            empleado.setTipoPuesto(tipoPuesto);
-	            return ResponseUtil.success(service.guardar(empleado));
-	        } else {
-	            return ResponseUtil.badRequest(
-	                "El tipo de puesto / rol '" + tipoPuesto + "' no es válido.");
-	        }
-	    } else {
-	        return ResponseUtil.badRequest(
-	            "No existe el proveedor con el id: " + id);
-	    }
-	}
-
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<APIResponse<Empleado>> eliminarEmpleado(@PathVariable("id") Integer id) {
-		if (service.existe(id)) {
-			Empleado empleadoEliminado = service.buscarPorId(id);
-			service.eliminar(id);
-			return ResponseUtil.success(empleadoEliminado);
-
-		} else {
-			return ResponseUtil.badRequest("No existe el proveedor con el id: " + id + ".");
-		}
-
-	}
-
-	@GetMapping("/dni/{dni}")
-	public ResponseEntity<APIResponse<Empleado>> mostrarEmpleadoPorDni(@PathVariable Integer dni) {
-		if (service.buscarPorDni(dni) != null) {
-			return ResponseUtil.success(service.buscarPorDni(dni));
-		} else {
-			return ResponseUtil.notFound("No se encontro el empleado con el dni: " + dni + ".");
-		}
-	}
-
-	@GetMapping("/activar_desactivar/{id}")
-
-	public ResponseEntity<APIResponse<Empleado>> activar_desactivar(@PathVariable Integer id) {
-		if (service.existe(id)) {
-			return ResponseUtil.success(service.activar_desactivar(id));
-		} else {
-			return ResponseUtil.notFound("No se encontro el empleado con el id: " + id + ".");
-		}
-	}
-
-	@GetMapping("/{empleadoId}/supervisados")
-	public ResponseEntity<APIResponse<Map<String, Object>>> obtenerEmpleadoYSupervisados(
-			@PathVariable Integer empleadoId) {
-		if (!service.existe(empleadoId)) {
-			return ResponseUtil.notFound("No se encontro el empleado con el id: " + empleadoId + ".");
-		}
-		Empleado empleado = service.buscarPorId(empleadoId);
-		List<Empleado> supervisados = service.buscarSupervisadosPorId(empleadoId);
-		Map<String, Object> response = new HashMap<>();
-		response.put("empleado", empleado);
-		response.put("supervisados", supervisados);
-		return ResponseUtil.success(response);
-	}
-	@ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex){
+    // Manejo de excepciones
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex) {
         return ResponseUtil.handleConstraintException(ex);
     }
+
     @ExceptionHandler(Exception.class)
-   public ResponseEntity<APIResponse<Object>> handleException(Exception ex) {
-       return ResponseUtil.badRequest(ex.getMessage());
-   }
+    public ResponseEntity<APIResponse<Object>> handleException(Exception ex) {
+        return ResponseUtil.badRequest(ex.getMessage());
+    }
 }
