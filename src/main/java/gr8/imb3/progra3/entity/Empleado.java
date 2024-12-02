@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -18,6 +19,7 @@ public class Empleado extends BaseEntity {
 	private String nombre;
 	private String tipoPuesto;
 	private	Integer dni;
+	@Email(message = "El formato del Correo Electrónico no es válido")
 	@NotBlank(message = "El Correo Electronico no puede estar vacío")
 	@Size(max = 40, message = "El Correo Electronico no debe superar los 40 caracteres")
 	private String correoElectronico;

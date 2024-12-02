@@ -11,4 +11,5 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Integer> {
 
 	public Empleado getByDni (Integer dni);
 	List<Empleado> findBySupervisorId(Integer supervisorId);
+	 boolean existsByIdAndActivoTrue(Integer id);
 }
