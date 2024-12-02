@@ -15,4 +15,5 @@ public interface IProveedorService {
 	public Proveedor deshabilitarProveedor(Proveedor proveedor);
 	public List<Proveedor> mostrarHabilitados();
 	public List<Proveedor> mostrarDeshabilitados();
+	public int countDeshabilitados();
 }

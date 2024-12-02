@@ -47,7 +47,7 @@ public class ProveedorController {
  	@GetMapping("/{id}")
 	public ResponseEntity<APIResponse<Proveedor>> mostrarProveedorPorId(@PathVariable Integer id) {
 		if(proveedorService.exists(id)) {
-			return ResponseUtil.success(proveedorService.buscarPorId(id));
+			return ResponseUtil.success(proveedorService.buscarPorId(id).getCategoria().toString());
 		}else {
 			return ResponseUtil.notFound("No se encontro el proveedor con el id: "+id+".");	
 		}
@@ -60,6 +60,23 @@ public class ProveedorController {
             return ResponseUtil.created(proveedorService.guardar(proveedor));
         }
     }
+ 	@PostMapping("/nuevo")
+    public ResponseEntity<APIResponse<Proveedor>> crearProveedorNuevo(@RequestBody Proveedor proveedor) {
+        if(proveedorService.exists((proveedor.getId()))) {
+            return ResponseUtil.badRequest("Ya existe el proveedor con el id: "+proveedor.getId()+".");
+        }else {
+        	if(proveedor.getCategoria().size() > 3) {
+        		return ResponseUtil.badRequest("El proveedor no puede tener mas de 3 categorias.");
+        	}
+        	if(proveedorService.countDeshabilitados() > 10 && proveedor.getHabilitado() == false) {
+        		return ResponseUtil.badRequest("Ya hay 10 o mas proveedores dehabilitados.");
+        	}
+        	else {
+        		return ResponseUtil.created(proveedorService.guardar(proveedor));
+        	}
+        }
+    }
+ 	
  	@PutMapping	
 	public ResponseEntity<APIResponse<Proveedor>> modificarProveedor(@RequestBody Proveedor proveedor) {
 		if(proveedorService.exists(proveedor.getId())) {
