@@ -3,6 +3,7 @@ package gr8.imb3.progra3.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,8 +30,10 @@ public class CategoriaController {
 	@PostMapping
 	public ResponseEntity<APIResponse<Categoria>> guardarCategoria(@RequestBody Categoria categoria) {
 		if (servicio.existe(categoria.getId())) {
-			return ResponseUtil.badRequest("Ya existe esta Categoria");
-		} else {
+			return ResponseUtil.error(HttpStatus.CONFLICT,"Ya existe una categoría con el mismo nombre");
+		} else if (!servicio.isHabilitado(categoria.getHabilitado()))
+			return ResponseUtil.badRequest("La categoría debe estar habilitada para ser creada");
+		else {
 			return ResponseUtil.created(servicio.guardar(categoria));
 		}
 	}
@@ -142,7 +145,7 @@ public class CategoriaController {
 	public ResponseEntity<APIResponse<Categoria>> eliminarDeshabilitado(@PathVariable("id") Integer id) {
 		if (servicio.existe(id)) {
 			Categoria categoria = servicio.buscarPorId(id);
-			if (categoria.isHabilitado() == true) {
+			if (categoria.getHabilitado() == true) {
 				return ResponseUtil.badRequest("No se pudo eliminar categoria habilitadas.");
 			} else {
 				servicio.eliminar(id);
@@ -153,10 +156,6 @@ public class CategoriaController {
 		}
 	}
 
-	@ExceptionHandler(ConstraintViolationException.class)
-	public ResponseEntity<APIResponse<Object>> handleException(ConstraintViolationException ex) {
-		return ResponseUtil.handleConstraintException(ex);
-	}
 
 	@ExceptionHandler(ConstraintViolationException.class)
 	public ResponseEntity<APIResponse<Object>> handleConstraintViolationException(ConstraintViolationException ex) {

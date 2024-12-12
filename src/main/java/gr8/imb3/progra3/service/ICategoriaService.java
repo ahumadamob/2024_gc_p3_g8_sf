@@ -17,5 +17,7 @@ public interface ICategoriaService {
 	public void eliminar(Integer id);
 
 	public boolean existe(Integer id);
+	
+	public boolean isHabilitado(boolean habilitado);
 
 }

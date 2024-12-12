@@ -49,4 +49,9 @@ public class CategoriaServiceImplJpa implements ICategoriaService{
 		
 	}
 
+	@Override
+	public boolean isHabilitado(boolean habilitado) {
+		return habilitado;
+	}
+
 }
